@@ -12,4 +12,8 @@ The project is a LINE chatbot that can respond to users' questions about public 
    * The chatbot returns the current number of confirmed cases and suspected cases in Mainland China and the number of cases in Hong Kong.
    * The chatbot will provide the latest number of confirmed cases of a specfic region.
    * The chatbot will provide the news about coronavirus if necessary
-3. Other keywords are not supported, and send a note to user.
+3. Policy Information
+   * The chatbot can list the ports that have been opened in Hong Kong right now when the user input 'port' or other relative keywords.
+   * The information of each ports such as the schedule of port opening and Information about ports will be opened or closed.
+   * The latest policies of self-isolation when people enter Hong Kong and the information of the relevant departments such as telephone and address.
+4. Other keywords are not supported, and send a note to user.
