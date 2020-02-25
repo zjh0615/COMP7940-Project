@@ -1,9 +1,15 @@
 # COMP 7940 CLOUD COMPUTING PROJECT
 
 ## Project outline
-The project is a line-based chatbot that can respond to users' questions about public health issues with suggestions or solutions
-###Design
-The chatbot can respond to three topics.
-1. Check local mask shops in Hong Kong and order masks online. The chatbot responds to the name of a street shop in which district of Hong Kong the shop is located. If you want to order a mask, the chatbot will ask for the amount and the user can respond accordingly. After confirming the reservation, the chatbot will send the quantity to the store and complete the mask reservation.
-2. Pay attention to the real-time number of coronavirus. Users input the number of confirmed cases, and the chatbot returns the current number of confirmed cases and suspected cases in China. To find out how many people have been diagnosed in a particular region, users simply type in the name of the city, such as Hong Kong. The chatbot will respond to the latest local diagnosis
-3.
+The project is a LINE chatbot that can respond to users' questions about public health issues with suggestions or solutions
+## Design
+### The chatbot can respond to two topics.
+1. Mask Information 
+   * The chatbot can list the stores which are selling masks right now when the user input 'Mask' or other relative keywords.
+   * Each store's information such as location, business hours will be shown in the following.
+   * The information of masks(price, amount,type) will be given if required.
+2. The Information About Coronavirus
+   * The chatbot returns the current number of confirmed cases and suspected cases in Mainland China and the number of cases in Hong Kong.
+   * The chatbot will provide the latest number of confirmed cases of a specfic region.
+   * The chatbot will provide the news about coronavirus if necessary
+3. Other keywords are not supported, and send a note to user.
