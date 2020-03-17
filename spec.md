@@ -3,7 +3,7 @@
 ## Project outline
 The project is a LINE chatbot that can respond to users' questions about public health issues with suggestions or solutions
 ## Design
-### The chatbot can respond to two topics.
+### The chatbot can respond to 3 topics.
 1. Mask Information 
    * The chatbot can list the stores which are selling masks right now when the user input 'Mask' or other relative keywords.
    * Each store's information such as location, business hours will be shown in the following.
