@@ -76,35 +76,6 @@ def callback():
     return 'OK'
 
 
-def InitWindow(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TemplateSendMessage(
-            alt_text='Buttons template',
-            template=ButtonsTemplate(
-                title='Home',
-                text='Choose your requests:',
-                actions=[
-                    PostbackAction(
-                        label='function_mask',
-                        display_text='mask information',
-                        data='funcid1'
-                    ),
-                    PostbackAction(
-                        label='function_coronavirus',
-                        display_text='coronavirus information',
-                        data='funcid2'
-                    ),
-                    PostbackAction(
-                        label='function_policy',
-                        display_text='policy',
-                        data='funcid3'
-                    )
-                ]
-            )
-        )
-    )
-
 
 # Handler function for Text Message
 def handle_TextMessage(event):
