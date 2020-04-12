@@ -105,7 +105,8 @@ def callback():
 
 
 # TODO: shop_window(url,title,place,time,num,price,call)
-def shop_window(url,title,place,time,num,price,call):
+def shop_window(url,title,place,time,num,price,call,web,addr):
+    postbackinfor=place+addr
     bubble = BubbleContainer(
         direction='ltr',
         hero=ImageComponent(
@@ -223,13 +224,19 @@ def shop_window(url,title,place,time,num,price,call):
                     height='sm',
                     action=URIAction(label='CALL', uri=call),
                 ),
+                SeparatorComponent(),
+                ButtonComponent(
+                    height='sm',
+                    #第一个是latitude, 第二个是longitude
+                    action=PostbackAction(label='Location',data=postbackinfor),
+                ),
                 # separator
                 SeparatorComponent(),
                 # websiteAction
                 ButtonComponent(
                     style='link',
                     height='sm',
-                    action=URIAction(label='WEBSITE', uri="https://example.com")
+                    action=URIAction(label='WEBSITE', uri=web)
                 )
             ]
         ),
@@ -239,7 +246,8 @@ def shop_window(url,title,place,time,num,price,call):
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    text = event.message.text
+    temp = event.message.text
+    text=temp.lower().strip()
 
     if text == 'profile':
         if isinstance(event.source, SourceUser):
@@ -270,6 +278,7 @@ def handle_text_message(event):
                 TextSendMessage(text='total usage: ' + str(quota_consumption.total_usage)),
             ]
         )
+        '''
     elif text == 'mask':
         msg = '1.Location \n2.Types \n3.Price'
         line_bot_api.push_message(
@@ -277,21 +286,39 @@ def handle_text_message(event):
                 TextSendMessage(text=msg),
             ]
         )
-    elif text == "location":
-        msg = '1.Hong Kong Island\n\n2. Kowloon \n\n3. New Territories'
-        line_bot_api.reply_message(
-            event.reply_token, [
-                TextSendMessage(text=msg),
-            ]
-        )
-    elif text == "Hong Kong":
+        '''
+    elif text == 'mask':
+        buttons_template = ButtonsTemplate(
+            title='Mask Information', text='choose one:', actions=[
+                
+                MessageAction(label='Location', text='Location'),
+                MessageAction(label='Types', text='Types'),
+                MessageAction(label='Price', text='Price')
+            ])
+        template_message = TemplateSendMessage(
+            alt_text='Buttons alt text', template=buttons_template)
+        line_bot_api.reply_message(event.reply_token, template_message)
+
+    elif text == 'location':
+        buttons_template = ButtonsTemplate(
+            title='Location', text='choose one:', actions=[
+                MessageAction(label='Hong Kong Island', text='Hong Kong Island'),
+                MessageAction(label='Kowloon', text='Kowloon'),
+                # PostbackAction(label='Policy', data='policy', text='policy'),
+                MessageAction(label='New Territories', text='New Territories')
+            ])
+        template_message = TemplateSendMessage(
+            alt_text='Buttons alt text', template=buttons_template)
+        line_bot_api.reply_message(event.reply_token, template_message)
+    elif text == "hong kong island":
         shop = []
         for i in range(redis1.hlen("mask1")):
             x = redis1.hget("mask1", i+1)
             if x:
                 x = x.strip().split()
-                bubble = shop_window(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
-                message = FlexSendMessage(alt_text="hello", contents=bubble)
+                call='tel:'+x[6].decode()
+                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(), x[5].decode(), call,x[7].decode(),x[8].decode())
+                message = FlexSendMessage(alt_text="hello.", contents=bubble)
                 shop.append(message)
             else:
                 break
@@ -300,13 +327,14 @@ def handle_text_message(event):
             shop
         )
 
-    elif text == "Kowloon":
+    elif text == "kowloon":
         shop = []
         for i in range(redis1.hlen("mask2")):
             x = redis1.hget("mask2", i+1)
             if x:
                 x = x.strip().split()
-                bubble = shop_window(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
+                call='tel:'+x[6].decode()
+                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(), x[5].decode(), call,x[7].decode(),x[8].decode())
                 message = FlexSendMessage(alt_text="hello", contents=bubble)
                 shop.append(message)
             else:
@@ -316,14 +344,14 @@ def handle_text_message(event):
             shop
         )
 
-    elif text == "New Territories":
+    elif text == "new territories":
         shop = []
         for i in range(redis1.hlen("mask3")):
             x = redis1.hget("mask3", i + 1)
             if x:
                 x = x.strip().split()
-                print(x[0], x[6])
-                bubble = shop_window(x[0], x[1], x[2], x[3], x[4], x[5], x[6])
+                call='tel:'+x[6].decode()
+                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(), x[5].decode(), call,x[7].decode(),x[8].decode())
                 message = FlexSendMessage(alt_text="hello", contents=bubble)
                 shop.append(message)
             else:
@@ -332,16 +360,17 @@ def handle_text_message(event):
             event.reply_token,
             shop
         )
-
-    elif text == "types":
-        msg = 'The mask type: \n1. N95 mask\n2. surgical mask\n3. normal mask'
-        line_bot_api.reply_message(
-            event.reply_token, [
-                TextSendMessage(msg),
-            ]
-        )
-    # TODO: 获取redis的数据，介绍每种mask
-    elif text == "N95 mask":
+    elif text == 'types':
+        buttons_template = ButtonsTemplate(
+            title='Mask Information', text='choose one:', actions=[
+                MessageAction(label='N95 mask', text='N95 mask'),
+                MessageAction(label='surgical mask', text='surgical mask'),
+                MessageAction(label='normal mask', text='normal mask')
+            ])
+        template_message = TemplateSendMessage(
+            alt_text='Buttons alt text', template=buttons_template)
+        line_bot_api.reply_message(event.reply_token, template_message)
+    elif text == "n95 mask":
         msg = """The introduction of N95 mask:
                 The N95 mask is one of nine types of particulate respirators certified by NIOSH, 
                 the National Institute for Occupational Safety and Health. N95 is not a specific product name, 
@@ -375,9 +404,10 @@ def handle_text_message(event):
                 TextSendMessage(msg),
             ]
         )
+
     # TODO: reply 每种口罩的推荐价格
-    elif text == "propsed price":
-        msg = 'The proposed price for masks: \nDaily masks: 10\nMedical masks: 200\nDust masks: 50'
+    elif text == "price":
+        msg = 'The proposed price for masks: \nN95 mask: 10\nSurgical masks: 200\nNormal masks: 50'
         line_bot_api.reply_message(
             event.reply_token, [
                 TextSendMessage(msg),
@@ -385,10 +415,33 @@ def handle_text_message(event):
         )
 
     # TODO: coronavirus: mainland,hk, case number, case number of each region, coronavirus news
-    elif text=="coronavirus":
-        pass
+
+    elif text == 'coronavirus':
+        buttons_template = ButtonsTemplate(
+            title='Coronavirus Cases Information', text='choose one:', actions=[
+                MessageAction(label='World', text='world'),
+                MessageAction(label='Mainland', text='mainland'),
+                MessageAction(label='Hong Kong', text='hong kong')
+            ])
+        template_message = TemplateSendMessage(
+            alt_text='Buttons alt text', template=buttons_template)
+        line_bot_api.reply_message(event.reply_token, template_message)
     # TODO: reply policy- port,time, gov policy
     elif text=="policy":
+        buttons_template = ButtonsTemplate(
+            title='Current Policy', text='choose one:', actions=[
+                MessageAction(label='Port', text='port'),
+                MessageAction(label='Inbound Travel', text='inbound travel'),
+                MessageAction(label='Hotline', text='hotline')
+            ])
+        template_message = TemplateSendMessage(
+            alt_text='Buttons alt text', template=buttons_template)
+        line_bot_api.reply_message(event.reply_token, template_message)
+    elif text=='port':
+        pass
+    elif text=='inbound travel':
+        pass
+    elif text=='hotline':
         pass
     elif text.startswith('broadcast '):  # broadcast 20190505
         date = text.split(' ')[1]
@@ -416,8 +469,8 @@ def handle_text_message(event):
         buttons_template = ButtonsTemplate(
             title='The Current Information', text='choose one:', actions=[
                 URIAction(label='Go to gov.hk', uri='https://www.coronavirus.gov.hk/sim/index.html'),
-                PostbackAction(label='Mask', data='mask'),
-                PostbackAction(label='Coronavirus', data='coronavirus', text='coronavirus'),
+                MessageAction(label='Mask', text='mask'),
+                MessageAction(label='Coronavirus', text='coronavirus'),
                 # PostbackAction(label='Policy', data='policy', text='policy'),
                 MessageAction(label='Policy', text='policy')
             ])
@@ -463,6 +516,9 @@ def handle_text_message(event):
 
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
+    print(event)
+    print()
+    print(event.message)
     line_bot_api.reply_message(
         event.reply_token,
         LocationSendMessage(
@@ -537,15 +593,21 @@ def handle_leave():
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    if event.postback.data == 'mask':
+    loc=event.postback.data
+    loc=loc.split('@')
+    addr=loc[0].strip()
+    infor=loc[1].strip().split(',')
+    latitude=float(infor[0].strip())
+    longitude=float(infor[1].strip())
+    print(latitude,longitude)
+    if event.postback.data:
         line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text='interface for mask information'))
-    elif event.postback.data == 'coronavirus':
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text='Interface for coronavirus'))
-    elif event.postback.data == 'policy':
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text='Interface for policy'))
+        event.reply_token,
+        LocationSendMessage(
+            title='Location', address=addr,
+            latitude=latitude, longitude=longitude
+        )
+    )
 
 
 @app.route('/static/<path:path>')
