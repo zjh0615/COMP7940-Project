@@ -1,3 +1,4 @@
 flask
 redis
 line-bot-sdk
+werkzeug>=0.15.4
