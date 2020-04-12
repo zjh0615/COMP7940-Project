@@ -412,7 +412,7 @@ def handle_text_message(event):
     elif text == 'coronavirus':
         buttons_template = ButtonsTemplate(
             title='Coronavirus Cases Information', text='choose one:', actions=[
-                MessageAction(label='World(TOP10)', text='world'),
+                MessageAction(label='World', text='world'),
                 MessageAction(label='Mainland', text='mainland'),
                 MessageAction(label='Hong Kong', text='hongkong')
             ])
@@ -424,7 +424,8 @@ def handle_text_message(event):
         buttons_template = ButtonsTemplate(
             title='Current Policy', text='choose one:', actions=[
                 MessageAction(label='Port', text='port'),
-                MessageAction(label='Inbound Travel', text='inbound travel'),
+                URIAction(label='Check Travel policy', uri=redis1.get("inbound1").decode()),
+                #MessageAction(label='Inbound Travel', text='inbound travel'),
                 MessageAction(label='Hotline', text='hotline')
             ])
         template_message = TemplateSendMessage(
@@ -466,17 +467,8 @@ def handle_text_message(event):
                 TextSendMessage(s),
             ]
         )
-    elif text == 'inbound travel':
-        s = redis1.hget("inbound1", "i1")
-        s=s.decode()
-        infor=s.split('Compulsory Quarantine')
-        it=[]
-        for i in infor:
-            it.append(TextMessage(i))
-        line_bot_api.reply_message(
-            event.reply_token,
-            it
-        )
+
+
     elif text == 'hotline':
         s=redis1.hget("policy1","p1")
         s=s.decode()
@@ -485,7 +477,6 @@ def handle_text_message(event):
             [
                 TextSendMessage(s),
             ]
-
         )
     elif text.startswith('broadcast '):  # broadcast 20190505
         date = text.split(' ')[1]
