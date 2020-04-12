@@ -48,6 +48,7 @@ from linebot.models import (
     TextComponent, SpacerComponent, IconComponent, ButtonComponent,
     SeparatorComponent, QuickReply, QuickReplyButton,
     ImageSendMessage)
+
 HOST = "redis-16933.c15.us-east-1-4.ec2.cloud.redislabs.com"
 PWD = "yBFMT0bNR2mpF3HjviE45Ig9xGIPxKtI"
 PORT = "16933"
@@ -104,9 +105,8 @@ def callback():
     return 'OK'
 
 
-# TODO: shop_window(url,title,place,time,num,price,call)
-def shop_window(url,title,place,time,num,price,call,web,addr):
-    postbackinfor=place+addr
+def shop_window(url, title, place, time, num, price, call, web, addr):
+    postbackinfor = place + addr
     bubble = BubbleContainer(
         direction='ltr',
         hero=ImageComponent(
@@ -227,8 +227,8 @@ def shop_window(url,title,place,time,num,price,call,web,addr):
                 SeparatorComponent(),
                 ButtonComponent(
                     height='sm',
-                    #第一个是latitude, 第二个是longitude
-                    action=PostbackAction(label='Location',data=postbackinfor),
+                    # 第一个是latitude, 第二个是longitude
+                    action=PostbackAction(label='Location', data=postbackinfor),
                 ),
                 # separator
                 SeparatorComponent(),
@@ -247,7 +247,7 @@ def shop_window(url,title,place,time,num,price,call,web,addr):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     temp = event.message.text
-    text=temp.lower().strip()
+    text = temp.lower().strip()
 
     if text == 'profile':
         if isinstance(event.source, SourceUser):
@@ -290,7 +290,7 @@ def handle_text_message(event):
     elif text == 'mask':
         buttons_template = ButtonsTemplate(
             title='Mask Information', text='choose one:', actions=[
-                
+
                 MessageAction(label='Location', text='Location'),
                 MessageAction(label='Types', text='Types'),
                 MessageAction(label='Price', text='Price')
@@ -313,11 +313,12 @@ def handle_text_message(event):
     elif text == "hong kong island":
         shop = []
         for i in range(redis1.hlen("mask1")):
-            x = redis1.hget("mask1", i+1)
+            x = redis1.hget("mask1", i + 1)
             if x:
                 x = x.strip().split()
-                call='tel:'+x[6].decode()
-                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(), x[5].decode(), call,x[7].decode(),x[8].decode())
+                call = 'tel:' + x[6].decode()
+                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(),
+                                     x[5].decode(), call, x[7].decode(), x[8].decode())
                 message = FlexSendMessage(alt_text="hello.", contents=bubble)
                 shop.append(message)
             else:
@@ -330,11 +331,12 @@ def handle_text_message(event):
     elif text == "kowloon":
         shop = []
         for i in range(redis1.hlen("mask2")):
-            x = redis1.hget("mask2", i+1)
+            x = redis1.hget("mask2", i + 1)
             if x:
                 x = x.strip().split()
-                call='tel:'+x[6].decode()
-                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(), x[5].decode(), call,x[7].decode(),x[8].decode())
+                call = 'tel:' + x[6].decode()
+                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(),
+                                     x[5].decode(), call, x[7].decode(), x[8].decode())
                 message = FlexSendMessage(alt_text="hello", contents=bubble)
                 shop.append(message)
             else:
@@ -350,8 +352,9 @@ def handle_text_message(event):
             x = redis1.hget("mask3", i + 1)
             if x:
                 x = x.strip().split()
-                call='tel:'+x[6].decode()
-                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(), x[5].decode(), call,x[7].decode(),x[8].decode())
+                call = 'tel:' + x[6].decode()
+                bubble = shop_window(x[0].decode(), x[1].decode(), x[2].decode(), x[3].decode(), x[4].decode(),
+                                     x[5].decode(), call, x[7].decode(), x[8].decode())
                 message = FlexSendMessage(alt_text="hello", contents=bubble)
                 shop.append(message)
             else:
@@ -372,23 +375,15 @@ def handle_text_message(event):
         line_bot_api.reply_message(event.reply_token, template_message)
     elif text == "n95 mask":
         msg = """The introduction of N95 mask:
-                The N95 mask is one of nine types of particulate respirators certified by NIOSH, 
-                the National Institute for Occupational Safety and Health. N95 is not a specific product name, 
-                as long as it meets the N95 standard and passes the NIOSH review, it can be called N95 mask, 
-                which can achieve filtration efficiency of more than 95% on particles with an aerodynamic diameter of 0.24±0.6 m 
-                (physical diameter of 0.075 m±0.020 m)."""
+        The N95 mask is one of nine types of particulate respirators certified by NIOSH, the National Institute for Occupational Safety and Health. N95 is not a specific product name, as long as it meets the N95 standard and passes the NIOSH review, it can be called N95 mask, which can achieve filtration efficiency of more than 95% on particles with an aerodynamic diameter of 0.24±0.6 m (physical diameter of 0.075 m±0.020 m)."""
         line_bot_api.reply_message(
             event.reply_token, [
                 TextSendMessage(msg),
             ]
         )
     elif text == "surgical mask":
-        msg = '''The introduction of surgical mask：
-                 Surgical masks consists of mask body and tighten belt, 
-                 which masks face body is divided into inner, 
-                 middle and outer layer and inner layer for close skin material (common health gauze or non-woven), 
-                 middle to isolate filter layer (superfine melt-blown polypropylene fibre material layer), 
-                 outer layer material for special antibacterial layer (non-woven or ultrathin polypropylene melt-blown material layer)'''
+        msg = '''The introduction of surgical mask:
+        Surgical masks consists of mask body and tighten belt, which masks face body is divided into inner, middle and outer layer and inner layer for close skin material (common health gauze or non-woven),  middle to isolate filter layer (superfine melt-blown polypropylene fibre material layer), outer layer material for special antibacterial layer (non-woven or ultrathin polypropylene melt-blown material layer)'''
         line_bot_api.reply_message(
             event.reply_token, [
                 TextSendMessage(msg),
@@ -396,9 +391,7 @@ def handle_text_message(event):
         )
     elif text == "normal mask":
         msg = '''The introduction of normal mask：
-                 Mask is a kind of hygiene supplies, 
-                 generally refers to wear in the mouth and nose position used to filter the air into the mouth and nose, 
-                 in order to block harmful gases, smells, droplets in and out of the wearer's mouth and nose appliances, made of gauze or paper'''
+        Mask is a kind of hygiene supplies, generally refers to wear in the mouth and nose position used to filter the air into the mouth and nose, in order to block harmful gases, smells, droplets in and out of the wearer's mouth and nose appliances, made of gauze or paper'''
         line_bot_api.reply_message(
             event.reply_token, [
                 TextSendMessage(msg),
@@ -419,15 +412,15 @@ def handle_text_message(event):
     elif text == 'coronavirus':
         buttons_template = ButtonsTemplate(
             title='Coronavirus Cases Information', text='choose one:', actions=[
-                MessageAction(label='World', text='world'),
+                MessageAction(label='World(TOP10)', text='world'),
                 MessageAction(label='Mainland', text='mainland'),
-                MessageAction(label='Hong Kong', text='hong kong')
+                MessageAction(label='Hong Kong', text='hongkong')
             ])
         template_message = TemplateSendMessage(
             alt_text='Buttons alt text', template=buttons_template)
         line_bot_api.reply_message(event.reply_token, template_message)
-    # TODO: reply policy- port,time, gov policy
-    elif text=="policy":
+    # TODO: reply policy- port, gov policy, hotcall
+    elif text == "policy":
         buttons_template = ButtonsTemplate(
             title='Current Policy', text='choose one:', actions=[
                 MessageAction(label='Port', text='port'),
@@ -437,12 +430,63 @@ def handle_text_message(event):
         template_message = TemplateSendMessage(
             alt_text='Buttons alt text', template=buttons_template)
         line_bot_api.reply_message(event.reply_token, template_message)
-    elif text=='port':
-        pass
-    elif text=='inbound travel':
-        pass
-    elif text=='hotline':
-        pass
+    elif text == 'port':
+        ports = redis1.get(1)
+        s = ports.decode()
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(s),
+            ]
+        )
+    elif text == 'world':
+        s1 = redis1.get('world')
+        s = s1.decode()
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(s),
+            ]
+        )
+    elif text == 'mainland':
+        s2 = redis1.get('China')
+        s = s2.decode()
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(s),
+            ]
+        )
+    elif text == 'hongkong':
+        s3 = redis1.get('Hong Kong')
+        s = s3.decode()
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(s),
+            ]
+        )
+    elif text == 'inbound travel':
+        s = redis1.hget("inbound1", "i1")
+        s=s.decode()
+        infor=s.split('Compulsory Quarantine')
+        it=[]
+        for i in infor:
+            it.append(TextMessage(i))
+        line_bot_api.reply_message(
+            event.reply_token,
+            it
+        )
+    elif text == 'hotline':
+        s=redis1.hget("policy1","p1")
+        s=s.decode()
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(s),
+            ]
+
+        )
     elif text.startswith('broadcast '):  # broadcast 20190505
         date = text.split(' ')[1]
         print("Getting broadcast result: " + date)
@@ -593,21 +637,21 @@ def handle_leave():
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    loc=event.postback.data
-    loc=loc.split('@')
-    addr=loc[0].strip()
-    infor=loc[1].strip().split(',')
-    latitude=float(infor[0].strip())
-    longitude=float(infor[1].strip())
-    print(latitude,longitude)
+    loc = event.postback.data
+    loc = loc.split('@')
+    addr = loc[0].strip()
+    infor = loc[1].strip().split(',')
+    latitude = float(infor[0].strip())
+    longitude = float(infor[1].strip())
+    print(latitude, longitude)
     if event.postback.data:
         line_bot_api.reply_message(
-        event.reply_token,
-        LocationSendMessage(
-            title='Location', address=addr,
-            latitude=latitude, longitude=longitude
+            event.reply_token,
+            LocationSendMessage(
+                title='Location', address=addr,
+                latitude=latitude, longitude=longitude
+            )
         )
-    )
 
 
 @app.route('/static/<path:path>')
